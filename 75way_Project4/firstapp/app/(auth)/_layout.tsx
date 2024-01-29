@@ -1,12 +1,13 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Tabs } from 'expo-router';
+import { Link, Slot, Tabs } from 'expo-router';
 import { Pressable } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { AuthProvider } from '@/context/auth/AuthContext';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -21,6 +22,7 @@ export default function AuthLayout() {
 
   return (
     <AuthProvider>
+
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
@@ -57,6 +59,8 @@ export default function AuthLayout() {
         }}
       />
     </Tabs>
+   
+
     </AuthProvider>
   );
 }

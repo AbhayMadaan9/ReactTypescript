@@ -1,15 +1,17 @@
 import React, {useEffect} from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useGetUserQuery } from '../services/userapi';
-
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
 // type Props = {
 //   children?: React.ReactNode;
 // };
 
-export const AdminLayout = (props: {authtoken: string}) => {
-  console.log(props.authtoken)
-  const { data, error, isLoading } = useGetUserQuery({ token: props.authtoken });
+export const AdminLayout = () => {
+  const accessToken = useSelector((state: RootState) => state.auth.accesstoken);
+  // console.log(props.authtoken)
+  const { data, error, isLoading } = useGetUserQuery({ token: accessToken });
 
   useEffect(() => {
     if (data) {

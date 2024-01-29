@@ -1,7 +1,7 @@
 import React, { createContext, useReducer } from "react";
 import { initialState, ThemeReducer, Themeobj } from './ThemeReducer';
 
-const ThemeContext = createContext<Themeobj | undefined>(undefined);
+export const ThemeContext = createContext<Themeobj | undefined>(undefined);
 
 type Props = {
   children: React.ReactNode;

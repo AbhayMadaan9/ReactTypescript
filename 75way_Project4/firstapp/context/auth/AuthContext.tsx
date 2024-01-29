@@ -1,7 +1,7 @@
 import { createContext, useReducer } from "react";
 import { initialState, AuthReducer } from './AuthReducer';
 
-const AuthContext = createContext(initialState); // state is imported from authreducer
+export const AuthContext = createContext(initialState); // state is imported from authreducer
 
 type Props = {
   children: React.ReactNode; // Corrected spelling here

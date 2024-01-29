@@ -4,7 +4,7 @@ import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
 import { router } from 'expo-router';
-
+import { yupResolver } from '@hookform/resolvers/yup'
 
 
 
@@ -12,7 +12,7 @@ const schema = yup.object().shape({
   username: yup.string().min(3).required(),
   email: yup.string().email().required(),
   password: yup.string().min(6).required(),
-});
+}).required();
 
 type FormData = {
   username: string;
@@ -22,7 +22,9 @@ type FormData = {
 
 
 const RegisterScreen: React.FC = () => {
-  const { control, handleSubmit, formState } = useForm<FormData>();
+  const { control, handleSubmit, formState } = useForm<FormData>({
+    resolver: yupResolver(schema)
+  });
 
   const onSubmit = (data: FormData) => {
     // Implement user registration logic here
@@ -113,7 +115,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderWidth: 1,
     borderColor: '#ccc',
-    color: "#fff"
+
   },
   errorText: {
     color: 'red',

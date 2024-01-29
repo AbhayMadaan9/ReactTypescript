@@ -35,7 +35,7 @@ export default function App() {
     <div>
      <BrowserRouter>
      <Routes>
-     <Route path = "/" element={<AdminLayout authtoken={authtoken}/>}>
+     <Route path = "/" element={<AdminLayout />}>
           <Route index path='dashboard' element={<Dashboard authtoken={authtoken} />} />
           <Route path="settings" element={<Settings />} />
           <Route path='home' element= {<Admin/>}/>
@@ -43,17 +43,17 @@ export default function App() {
         <Route path='register' element= {<Register/>}/>
          <Route path='login' element= {<Login authtoken = {authtoken}/>}/>
         </Routes>
-      {/* <Routes>
+      <Routes>
         <Route path="/" element={<UserLayout />}>
           <Route path='home' element= {<User/>}/>
         </Route>
       </Routes>
       <Routes>
-        <Route path="/" element={<BasicLayout />}>
+      {/* <Route path="/" element={<BasicLayout />}>
           <Route path='home' element= {<Basic/>}/>
-        </Route>
-      </Routes> */}
-    </BrowserRouter>
+        </Route> */}
+      </Routes> 
+    </BrowserRouter> 
     </div>
   )
 }
