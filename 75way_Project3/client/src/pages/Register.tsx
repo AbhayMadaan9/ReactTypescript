@@ -1,119 +1,148 @@
-import { Button, FormLabel, Input } from '@mui/material';
-import React, { useState, useEffect } from 'react';
-import { useForm, SubmitHandler, FieldValues, SubmitErrorHandler } from 'react-hook-form';
+import { Box, Button, Container, FormLabel, Input, MenuItem, Paper, Select, Typography } from '@mui/material';
+import React, { useEffect } from 'react';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import * as yup from 'yup';
 import { useRegisterUserMutation } from '../services/userapi';
-import { Navigate, useNavigate } from 'react-router-dom';
-// import { yupResolver } from '@hookform/resolvers/yup';
+import { Link, useNavigate } from 'react-router-dom';
+ import { yupResolver } from '@hookform/resolvers/yup';
+import { Bounce, toast } from 'react-toastify';
+import loaderimg from '../assests/75waylogo.png'
 
 
 
-// Define Yup schema for validation
-// const schema = yup.object().shape({
-//   // firstName: yup.string().required('First Name is required'),
-//   // lastName: yup.string().required('Last Name is required'),
-//   username: yup.string().required('Username is required'),
-//   email: yup.string().email('Invalid email').required('Email is required'),
-//   password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
-//   // confirmPassword: yup.string().oneOf([yup.ref('password'), ""], 'Passwords must match'),
-// });
+const schema = yup.object().shape({
+   role: yup.string().required('role is required'),
+  username: yup.string().required('Username is required'),
+  email: yup.string().email('Invalid email').required('Email is required'),
+  password: yup.string().min(4, 'Password must be at least 4 characters').required('Password is required'),
+});
 
 // Define form data interface
 interface FormData {
-  // firstName: string;
-  // lastName: string;
   username: string;
   email: string;
   password: string;
-  // confirmPassword: string;
+  role: string;
 }
 
 // RegisterForm component
 const Register: React.FC = () => {
 
-
-  const [isLoading, setisLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const { register, reset, handleSubmit, formState: { errors } } = useForm<FormData>();
-
-  const [registerUser, { data, error }] = useRegisterUserMutation();
-  const onSubmit: SubmitHandler<FormData> = async (dataa: FormData) => {
-    setisLoading(true);
-
-    try {
-      await registerUser(dataa);
-      if (data) {
-        console.log('Registration successful:', data);
-        setisLoading(false);
-        reset()
-        navigate('/login');
-      } else if (error) {
-        // Handle error state
-        setisLoading(false)
-        reset()
-        console.error('Invalid Credentials:', error);
-        alert('Error occurred');
-      }
-    } catch {
-      // Handle unexpected errors
-      console.error('An unexpected error occurred:', error);
-      alert('Unexpected error occurred. please refresh');
-    } finally {
-      setisLoading(false);
+  const { register, reset, handleSubmit, formState: { errors } } = useForm<FormData>(
+    {
+      resolver: yupResolver(schema)
     }
-  }
+  );
 
-  // Error handler
-  //   const onError: SubmitErrorHandler<FieldValues> = (errors, e) => {
-  // if(errors)
-  // {
-  //   alert(e);
-  // }
-  // else if(error) {alert(error)}
-  //   };
+  const [registerUser, { data, error, isLoading, isSuccess }] = useRegisterUserMutation();
+
+  useEffect(()=>{
+if(error)
+{
+  alert("Registration failed. Try again ")
+  toast(`Registeration error: ${error}`, {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+    });
+  // Handle server-side errors
+  console.error('Registration failed:', error);
+
+}
+else if(isSuccess){
+  toast('Registeration successfull', {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+    });
+    alert("Registration successfull")
+  console.log('Registration successful:', data);
+  reset();
+  navigate('/login');
+}
+
+  }, [isSuccess, error])
+  const onSubmit: SubmitHandler<FormData> = async (dataa: FormData) => {
+   await registerUser(dataa)
+  }
 
   return (
     <>
       {!isLoading ?
         <>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div>
-              <FormLabel htmlFor="username">Username</FormLabel>
-              <Input
-                {...register("username", { required: true })}
-                aria-invalid={errors.username ? "true" : "false"}
-              />
-              {errors.username?.type === "required" && (
-                <p role="alert">Username is required</p>
-              )}
-            </div>
-            <div>
-              <FormLabel htmlFor="email">Email</FormLabel>
-              <Input
-                {...register("email", { required: true })}
-                aria-invalid={errors.email ? "true" : "false"}
-              />
-              {errors.email?.type === "required" && (
-                <p role="alert">Email is required</p>
-              )}
-            </div>
-
-            <div>
-              <FormLabel htmlFor="password">Password</FormLabel>
-              <Input type='password'
-                {...register("password", { required: true })}
-                aria-invalid={errors.password ? "true" : "false"}
-              />
-              {errors.password?.type === "required" && (
-                <p role="alert">Password is required</p>
-              )}
-            </div>
-            <Button type="submit">Register</Button>
-          </form>
+        <Container component="main" maxWidth="xs" style={{ marginTop: '50px' }}>
+      <Paper elevation={3} sx={{ padding: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Typography variant="h5" gutterBottom>
+          Register
+        </Typography>
+        <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%' }}>
+          <Box mb={2} width="100%">
+            <FormLabel htmlFor="username">Username</FormLabel>
+            <Input
+              {...register("username")}
+              error={!!errors.username}
+            />
+          </Box>
+          <Box mb={2} width="100%">
+            <FormLabel htmlFor="role">Role</FormLabel>
+            <Select
+              {...register("role")}
+              defaultValue="admin"
+              error={!!errors.role}
+              displayEmpty
+            >
+              <MenuItem value="" disabled>Select Role</MenuItem>
+              <MenuItem value="admin">Admin</MenuItem>
+              <MenuItem value="user">User</MenuItem>
+            </Select>
+            {errors.role && (
+              <p role="alert">{errors.role.message}</p>
+            )}
+          </Box>
+          <Box mb={2} width="100%">
+            <FormLabel htmlFor="email">Email</FormLabel>
+            <Input
+              {...register("email")}
+              error={!!errors.email}
+            />
+          </Box>
+          <Box mb={2} width="100%">
+            <FormLabel htmlFor="password">Password</FormLabel>
+            <Input
+              type="password"
+              {...register("password")}
+              error={!!errors.password}
+            />
+          </Box>
+          <Box textAlign="center" width="100%">
+            <Button type="submit" variant="contained" color="primary">
+              Register
+            </Button>
+  
+          </Box>
+      
+        </form>
+      
+      </Paper>
+      <Link to = "/login">Already have account</Link>
+    </Container>
         </> :
         <>
-          Loading ....
+         <img src={loaderimg} alt="loader" />
         </>
       }
     </>

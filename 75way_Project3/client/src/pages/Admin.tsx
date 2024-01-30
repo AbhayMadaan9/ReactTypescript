@@ -1,7 +1,7 @@
 import { Button } from '@mui/material'
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { RemoveToken } from '../redux/user/authslice'
+import { RemoveToken } from '../redux/authslice'
 import { Link } from 'react-router-dom'
 const Admin: React.FC = ()=> {
   const dispatch = useDispatch()

@@ -1,11 +1,14 @@
 import React, { useEffect } from "react";
 import { useDeleteUserMutation, useGetUsersQuery } from "../services/userapi";
 import { Navigate } from "react-router-dom";
-import { User } from "../redux/user/useslice";
+import { User } from "../redux/userslice";
 import { MdDelete } from "react-icons/md";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
-export const Dashboard = (props: { authtoken: string }) => {
-  const { data, error, isLoading } = useGetUsersQuery({ token: props.authtoken });
+export const Dashboard = () => {
+  const accessToken = useSelector((state: RootState) => state.auth.accesstoken);
+  const { data, error, isLoading } = useGetUsersQuery({ token: accessToken });
 
   useEffect(() => {
     if (data) {
@@ -26,7 +29,7 @@ export const Dashboard = (props: { authtoken: string }) => {
 
     if (confirmm) {
       try {
-        await deleteUser({id: _id, token: props.authtoken});
+        await deleteUser({id: _id, token: accessToken});
       } catch (error) {
         // Handle unexpected errors
         console.error('An unexpected error occurred:', error);

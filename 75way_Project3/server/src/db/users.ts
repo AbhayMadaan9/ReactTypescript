@@ -9,6 +9,7 @@ const UserSchema = new mongoose.Schema({
     salt: { type: String, select: false },
     sessionToken: { type: String, select: false },
   },
+  role: {type: String, default: "admin"}
 });
 
 export const UserModel = mongoose.model('User', UserSchema);
