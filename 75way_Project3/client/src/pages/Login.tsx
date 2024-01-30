@@ -122,6 +122,7 @@ console.log(dataa)
   </Container>
       </> :
       <>
+      Loading...
        <img src={loaderimg} alt="loader" />
       </>
     }

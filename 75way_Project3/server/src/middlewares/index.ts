@@ -12,7 +12,7 @@ interface customrequest extends express.Request {
 
 export const isAuthenticated = async (req: customrequest, res: express.Response, next: express.NextFunction) => {
   try {
-    const sessionToken: string | undefined = req.cookies.authtoken
+    const sessionToken: string | undefined = req.cookies.authtoken;
     if (!sessionToken) {
       console.log(sessionToken)
       return res.status(403).send("token not found");
@@ -24,7 +24,7 @@ export const isAuthenticated = async (req: customrequest, res: express.Response,
       if(!decoded) return res.status(400).send("failed to fetch id")
       req.userid = decoded.data.id;
     } catch(error: any) {
-     return res.status(400).send(error.message);
+     return res.status(401).send(error.message); //401 for the invalid token
     }
 
     return next();
@@ -52,7 +52,7 @@ export const isOwner = async (req: customrequest, res: express.Response, next: e
       return next();
     } catch(error: any) {
       console.log(error)
-      return res.status(400).send(error.message);
+      return res.status(401).send(error.message); //401 for the invalid token
     }
 
   } catch (error) {
@@ -77,7 +77,7 @@ export const isUser = async (req: customrequest, res: express.Response, next: ex
       if(!user || user.role  !== "user") return res.status(400).send("Invalid user");
       next();
     } catch(error: any) {
-     return res.status(400).send(error.message);
+      return res.status(401).send(error.message); //401 for the invalid token
     }
     
      
@@ -94,7 +94,7 @@ try {
   const v = new Validator(req.body, {
     username: 'maxLength:15',
     email: 'required|email',
-    password: 'required'
+    password: 'required|minLength:4'
   }
   );
   const matched = await v.check();

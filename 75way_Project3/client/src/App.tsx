@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, Link } from "react-router-dom";
 import {AdminLayout} from './Layouts/AdminLayout';
 import {Dashboard} from './pages/Dashboard';
 import Settings from './pages/Settings';
@@ -13,13 +13,14 @@ import {Login} from './pages/Login';
 import { useSelector } from 'react-redux';
 import { RootState } from './redux/store';
 import { getaccesstoken } from './services/getcookie';
+import { useGetUserQuery } from './services/userapi';
 
 
 
 export default function App() {
   const [authtoken, setauthtoken] = useState<string | null>(null)
   const accessToken = useSelector((state: RootState) => state.auth.accesstoken);
-
+  
   useEffect(() => {
     // Update authtoken when accessToken changes
     setauthtoken(accessToken);
@@ -32,6 +33,8 @@ export default function App() {
       setauthtoken(storedToken);
     }
   }, []);
+  
+ 
   return (
     <div>
      <BrowserRouter>
@@ -39,16 +42,17 @@ export default function App() {
      <Route path = "/" element={<AdminLayout />}>
           <Route index path='dashboard' element={<Dashboard />} />
           <Route path="settings" element={<Settings />} />
-          <Route path='home' element= {<Admin/>}/>
+          <Route path='home' element= { <Admin/>}/>
         </Route>
         <Route path='register' element= {<Register/>}/>
          <Route path='login' element= {<Login authtoken = {authtoken}/>}/>
+         <Route path='*' element= {<><Link to="/home">Please go to home page</Link></>}/>
         </Routes>
-      <Routes>
+      {/* <Routes>
         <Route path="/" element={<UserLayout />}>
           <Route path='home' element= {<User/>}/>
         </Route>
-      </Routes>
+      </Routes> */}
       <Routes>
       {/* <Route path="/" element={<BasicLayout />}>
           <Route path='home' element= {<Basic/>}/>

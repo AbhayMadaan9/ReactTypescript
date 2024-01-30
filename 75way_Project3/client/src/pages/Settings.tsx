@@ -3,7 +3,7 @@ import React from "react"
 const Settings: React.FC = ()=>{
 return (
         <>
-        Dashboard
+        Settings
         </>
     )
 }

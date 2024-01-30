@@ -4,6 +4,7 @@ export interface User {
   _id: string;
     username: string;
     email: string;
+    role: string;
 }
 export interface UserState {
     Users: User[];
@@ -24,8 +25,7 @@ export const userSlice = createSlice({
       state.Users = action.payload.users;
     },
   setUser: (state, action: PayloadAction<{ currentUser: User}>)=>{
-    state.currentUser = action.payload.currentUser
-    
+    state.currentUser = action.payload.currentUser  
   }
   },
 });

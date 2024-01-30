@@ -26,11 +26,11 @@ export const login = async (req: express.Request, res: express.Response) => {
 
 
     const token: string = jwt.sign({
-      exp: Math.floor(Date.now() / 1000) + (60 * 60),
+      exp: Math.floor(Date.now() / 1000) + 20,
       data: {id: user._id}
     }, 'secret');
     const refreshtoken: string = jwt.sign({
-      exp: Math.floor(Date.now() / 1000) + (60 * 60),
+      exp: Math.floor(Date.now() / 1000) + (60 * 2),
       data: {id: user._id}
     }, 'secret');
     refreshTokens.push(refreshtoken)

@@ -9,11 +9,19 @@ const Admin: React.FC = ()=> {
     dispatch(RemoveToken());
   }
   return (
-    <div>
-      <Button onClick={handlelogout}>Logout</Button>
-      <Link to="/dashboard">Dashboard</Link>
-      <Link to="/settings">Settings</Link>
+    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px' }}>
+    <Button variant="outlined" onClick={handlelogout}>
+      Logout
+    </Button>
+    <div style={{ display: 'flex', gap: '10px' }}>
+      <Link to="/dashboard"  color="inherit">
+        Dashboard
+      </Link>
+      <Link to="/settings" color="inherit">
+        Settings
+      </Link>
     </div>
+  </div>
   )
 }
 

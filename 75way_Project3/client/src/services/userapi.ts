@@ -54,14 +54,13 @@ export const userApi = createApi({
       }),
     }),
     getUsers: builder.query({
-      query: (body: { token: string | null }) => ({
+      query: () => ({
         url: `/users`,
         credentials: "include",
         method: "get",
-        headers: {
-     
-          "Content-Type": "application/json",
-        },
+        // headers: {
+        //   "Content-Type": "application/json",
+        // },
       }),
       providesTags: () => [{ type: "User", id: "List" }],
     }),
@@ -75,14 +74,13 @@ export const userApi = createApi({
     //     },
     //   }),
     deleteUser: builder.mutation({
-      query: (body: { id: string; token: string | null }) => {
+      query: (body: { id: string;}) => {
         console.log(body.id);
         return {
           url: `/deleteuser/${body.id}`,
           method: "delete",
           credentials: "include",
           headers: {
-     
             "Content-Type": "application/json",
           },
         };
@@ -99,5 +97,5 @@ export const {
   useGetUsersQuery,
   useDeleteUserMutation,
   useRefreshtokenMutation,
-  useLazyGetUserQuery
+  useLazyGetUsersQuery
 } = userApi;

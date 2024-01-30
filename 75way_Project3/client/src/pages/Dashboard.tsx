@@ -1,26 +1,44 @@
 import React, { useEffect } from "react";
-import { useDeleteUserMutation, useGetUsersQuery } from "../services/userapi";
-import { Navigate } from "react-router-dom";
+import { useDeleteUserMutation, useGetUsersQuery, useLazyGetUsersQuery } from "../services/userapi";
+import { Navigate, useNavigate } from "react-router-dom";
 import { User } from "../redux/userslice";
 import { MdDelete } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { Box, Button, CircularProgress, Typography } from "@mui/material";
+import { useTokenRefresh } from "../hooks/useRefreshToken";
 
 export const Dashboard = () => {
-  const accessToken = useSelector((state: RootState) => state.auth.accesstoken);
-  const { data, error, isLoading } = useGetUsersQuery({ token: accessToken });
+  //const accessToken = useSelector((state: RootState) => state.auth.accesstoken);
+  const {data, error: e, isLoading, isSuccess } = useGetUsersQuery({});
 
-  useEffect(() => {
-    if (data) {
-      // Handle successful data retrieval
-      console.log('Users data:', data);
-    }
+const navigate = useNavigate();
+useEffect(() => {
+  // const fetchData = async () => {
+  //   try {
+  //   await useTokenRefresh; // Refresh the access token
+  //   } catch (error) {
+  //     // Handle errors, e.g., redirect to login if refresh fails
+  //     console.error("Error fetching user data:", error);
+  //   }
+  // };
 
-    if (error) {
-      // Handle error
-      console.error('Error fetching user data:', error);
+  if (data) {
+    // Handle successful data retrieval
+    console.log("Users data:", data);
+  }
+
+  if (e) {
+    // Handle error
+    if ("originalStatus" in e && e.originalStatus === 401) {
+      // fetchData(); // If unauthorized, try refreshing the access token
+      alert("invalid token. Login again");
+      navigate("/login")
+    } else {
+      console.error("Error fetching user data:", e);
     }
-  }, [data, error]);
+  }
+}, [isSuccess, data, e]);
 
   const [deleteUser] = useDeleteUserMutation();
 
@@ -29,8 +47,9 @@ export const Dashboard = () => {
 
     if (confirmm) {
       try {
-        await deleteUser({id: _id, token: accessToken});
-      } catch (error) {
+      const res: any =  await deleteUser({id: _id});
+      console.log(res)
+      } catch (error: any) {
         // Handle unexpected errors
         console.error('An unexpected error occurred:', error);
         alert('Unexpected error occurred');
@@ -39,31 +58,44 @@ export const Dashboard = () => {
   };
 
   return (
-    <>
-      <h1>List of Users</h1>
+   <>
+    <Box>
+      <Typography variant="h4" mb={3}>
+        List of Users
+      </Typography>
       {isLoading ? (
-        <>Loading....</>
+        <CircularProgress />
       ) : (
         <>
-          {error ? (
-            <Navigate to="/login" />
+          {e ? (
+            <Typography color="error">Error fetching users</Typography>
           ) : (
             <>
-              {data ? (
-                data.map((user: User, ind: number) => (
-                  <div key={user._id}>
-                    <p>{ind + 1}. Username: {user.username}</p>
-                    <span>Email: {user.email}</span>
-                    <MdDelete onClick={() => handledelete(user._id)} />
-                  </div>
+              {data && Array.isArray(data) && data.length > 0 ? (
+                data.map((user) => (
+                  <Box key={user._id} mb={2} p={2} border="1px solid #ccc" borderRadius={4}>
+                    <Typography variant="subtitle1">
+                      Username: {user.username}
+                    </Typography>
+                    <Typography>Email: {user.email}</Typography>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      startIcon={<MdDelete />}
+                      onClick={() => handledelete(user._id)}
+                    >
+                      Delete
+                    </Button>
+                  </Box>
                 ))
               ) : (
-                <>No users found.</>
+                <Typography>No users found.</Typography>
               )}
             </>
           )}
         </>
       )}
-    </>
+    </Box>
+   </>
   );
 };

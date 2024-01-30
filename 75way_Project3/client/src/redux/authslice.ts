@@ -35,10 +35,8 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setToken, RemoveToken } = authSlice.actions;
+export const { setToken, RemoveToken, setAuthToken } = authSlice.actions;
 
 export default authSlice.reducer;
-function clearCookie(arg0: string) {
-  throw new Error("Function not implemented.");
-}
+
 
